@@ -1,1 +1,7 @@
-# ZKP_authentication
+# Linux Authentication System with Zero-Knowledge Proof
+
+## Description
+
+## Objectives
+
+## Planning
