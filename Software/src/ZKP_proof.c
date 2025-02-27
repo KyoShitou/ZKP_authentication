@@ -1,6 +1,8 @@
 #include "ZKP_proof.h"
 
-mpz_t* p, g;
+#include <time.h>
+
+mpz_t p, g;
 gmp_randstate_t state;
 
 
@@ -56,4 +58,6 @@ bool ZKP_verify(mpz_t y, void (*prover_commit)(mpz_t), void (*prover_response)(m
             }
         }
     }
+
+    return flag;
 }
