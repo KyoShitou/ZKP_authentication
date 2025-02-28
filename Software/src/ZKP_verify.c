@@ -6,25 +6,38 @@ mpz_t p, g;
 gmp_randstate_t state;
 
 
-static void Argument_init(){
-    static int initialized = 0;
-    if (initialized == 0){
-        mpz_init(p);
-        mpz_init(g);
-        initialized = 1;
-        gmp_randinit_default(state);
+// static void Argument_init(){
+//     static int initialized = 0;
+//     if (initialized == 0){
+//         mpz_init(p);
+//         mpz_init(g);
+//         initialized = 1;
+//         gmp_randinit_default(state);
 
-        // TODO: Need to update
-        unsigned long seed = (unsigned long)time(NULL);
-        gmp_randseed_ui(state, seed);
-        mpz_set_str(p, "23", 10);
-        mpz_set_str(g, "5", 10);
-    }
-}
+//         // TODO: Need to update
+//         unsigned long seed = (unsigned long)time(NULL);
+//         gmp_randseed_ui(state, seed);
+//         mpz_set_str(p, "23", 10);
+//         mpz_set_str(g, "5", 10);
+//     }
+// }
 
-bool ZKP_verify(mpz_t y, void (*prover_commit)(mpz_t), void (*prover_response)(mpz_t, bool), int rounds){
-    Argument_init();
+bool ZKP_verify(mpz_t y, void (*prover_commit)(mpz_t), void challenge_prover(bool), void (*prover_response)(mpz_t), int rounds){
+    // Argument_init();
     bool flag = true;
+
+    mpz_t p, g;
+    gmp_randstate_t state;
+
+    mpz_init(p);
+    mpz_init(g);
+    gmp_randinit_default(state);
+
+    // TODO: Need to update
+    unsigned long seed = (unsigned long)time(NULL);
+    gmp_randseed_ui(state, seed);
+    mpz_set_str(p, "23", 10);
+    mpz_set_str(g, "5", 10);
 
     for (int round = 0; round != rounds; round++){
         mpz_t challenge, commit, response;
@@ -33,7 +46,8 @@ bool ZKP_verify(mpz_t y, void (*prover_commit)(mpz_t), void (*prover_response)(m
         mpz_urandomb(challenge, state, 1);
 
         if (mpz_cmp_ui(challenge, 0) == 0){
-            prover_response(response, 0);
+            challenge_prover(0);
+            prover_response(response);
             mpz_t check;
             mpz_init(check);
             mpz_powm(check, g, response, p);
@@ -42,7 +56,8 @@ bool ZKP_verify(mpz_t y, void (*prover_commit)(mpz_t), void (*prover_response)(m
                 break;
             }
         } else {
-            prover_response(response, 1);
+            challenge_prover(1);
+            prover_response(response);
             mpz_t check;
             mpz_init(check);
             mpz_powm(check, g, response, p);

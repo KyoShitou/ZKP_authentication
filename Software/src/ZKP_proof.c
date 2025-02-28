@@ -17,12 +17,13 @@ static void Argument_init(){
         gmp_randseed_ui(state, seed);
         mpz_set_str(p, "23", 10);
         mpz_set_str(g, "5", 10);
+        initialized = 1;
     }
 }
 
 void ZKP_proof(mpz_t x,
     void (*commit_to_verifier)(mpz_t C),
-    bool* (*verifier_challenge)(void), // User pointer to indicate end of request (if NULL)
+    void (*verifier_challenge)(int *), 
     void (*respond)(mpz_t Response)
 ){
     Argument_init();
@@ -33,11 +34,13 @@ void ZKP_proof(mpz_t x,
     ZKP_commit(C, r, x);
     commit_to_verifier(C);
 
-    bool *challenge = verifier_challenge();
+    int challenge;
 
-    if (challenge == NULL) break;
+    verifier_challenge(&challenge);
+
+    if (challenge == 2) break;
     
-    ZKP_response(response, r, x, *challenge);
+    ZKP_response(response, r, x, challenge);
     respond(response);
     }
 
@@ -53,11 +56,11 @@ void ZKP_commit(mpz_t commit, mpz_t r, mpz_t x)
     return;
 }
 
-void ZKP_response(mpz_t response, mpz_t r, mpz_t x, bool request){
-    if (request == 0){ // Reveal r
+void ZKP_response(mpz_t response, mpz_t r, mpz_t x, int challenge){
+    if (challenge == 0){ // Reveal r
         mpz_set(response, r);
     } 
-    else { // send (x + r) mod (p - 1)
+    else { // challenge == 1, send (x + r) mod (p - 1)
         mpz_t p_dec, x_pls_r, one;
         mpz_inits(p_dec, x_pls_r, one, NULL);
         mpz_set_ui(one, 1);
