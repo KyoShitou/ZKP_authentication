@@ -8,7 +8,7 @@
 #define ZKP_BASE 10
 #endif
 
-void ZKP_proof(mpz_t secret,
+void ZKP_proof(char *secret,
     void (*commit_to_verifier)(char* C),
     void (*verifier_challenge)(int *), // 0 - reveal r, 1 - send (x + r) mod (p - 1), 2 - terminate
     void (*respond)(char* r)

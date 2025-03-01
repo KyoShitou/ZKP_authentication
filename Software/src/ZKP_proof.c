@@ -21,14 +21,16 @@ static void Argument_init(){
     }
 }
 
-void ZKP_proof(mpz_t x,
+void ZKP_proof(char *secret,
     void (*commit_to_verifier)(char* C),
     void (*get_verifier_challenge)(int *), 
     void (*respond_to_verifier)(char* Response)
 ){
     Argument_init();
-    mpz_t r, C, response;
-    mpz_inits(r, C,response, NULL);
+    mpz_t x, r, C, response;
+    mpz_inits(x, r, C,response, NULL);
+
+    mpz_set_str(x, secret, ZKP_BASE);
 
     for ( ; ; ) {
     ZKP_commit(C, r, x);
