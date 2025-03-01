@@ -15,16 +15,16 @@ static void Argument_init(){
         // TODO: Need to update
         unsigned long seed = (unsigned long)time(NULL);
         gmp_randseed_ui(state, seed);
-        mpz_set_str(p, "23", 10);
+        mpz_set_str(p, "620398778414193301888966326923", 10);
         mpz_set_str(g, "5", 10);
         initialized = 1;
     }
 }
 
 void ZKP_proof(mpz_t x,
-    void (*commit_to_verifier)(mpz_t C),
-    void (*verifier_challenge)(int *), 
-    void (*respond)(mpz_t Response)
+    void (*commit_to_verifier)(char* C),
+    void (*get_verifier_challenge)(int *), 
+    void (*respond_to_verifier)(char* Response)
 ){
     Argument_init();
     mpz_t r, C, response;
@@ -32,16 +32,21 @@ void ZKP_proof(mpz_t x,
 
     for ( ; ; ) {
     ZKP_commit(C, r, x);
-    commit_to_verifier(C);
+    char commit_str[1024];
+    mpz_get_str(commit_str, ZKP_BASE, C);
+    commit_to_verifier(commit_str);
 
     int challenge;
 
-    verifier_challenge(&challenge);
+    get_verifier_challenge(&challenge);
 
     if (challenge == 2) break;
     
     ZKP_response(response, r, x, challenge);
-    respond(response);
+
+    char response_str[1024];
+    mpz_get_str(response_str, ZKP_BASE, response);
+    respond_to_verifier(response_str);
     }
 
     mpz_clears(r, C, response, NULL);
@@ -51,7 +56,7 @@ void ZKP_commit(mpz_t commit, mpz_t r, mpz_t x)
 // Sets r = rand(), commit = g^r mod p
 {
     // Need to increase r length
-    mpz_urandomb(r, state, 16);
+    mpz_urandomb(r, state, 256);
     mpz_powm(commit, g, r, p);
     return;
 }

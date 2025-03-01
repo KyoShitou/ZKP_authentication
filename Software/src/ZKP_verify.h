@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include <gmp.h>
 
-bool ZKP_verify(mpz_t y, void (*prover_commit)(mpz_t), void (*challenge_prover)(bool), void (*prover_response)(mpz_t), int rounds);
+#ifndef ZKP_BASE
+#define ZKP_BASE 10
+#endif
+
+bool ZKP_verify(mpz_t y, void (*get_prover_commit)(char *), void (*challenge_prover)(bool), void (*get_prover_response)(char *), int rounds);
 
 #endif

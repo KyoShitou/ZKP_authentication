@@ -18,10 +18,10 @@ char buffer[1024] = {0};
 mpz_t y;
 
 
-void read_prover_commit(mpz_t c){
+void read_prover_commit(char *c){
     read(new_socket, buffer, sizeof(buffer));
     printf("Received key commit: %s\n", buffer);
-    mpz_set_str(c, buffer, 10);
+    strcpy(c, buffer);
     memset(buffer, '\0', 1024);
     return;
 }
@@ -36,17 +36,17 @@ void challenge_prover(bool challenge){
     return;
 }
 
-void prover_response(mpz_t response) {
+void prover_response(char *response) {
     read(new_socket, buffer, sizeof(buffer));
     printf("Received key response: %s\n", buffer);
-    mpz_set_str(response, buffer, 10);
+    strcpy(response, buffer);
     memset(buffer, '\0', 1024);
     return;
 }
 
 int main() {
     mpz_init(y);
-    mpz_set_ui(y, 17);
+    mpz_set_str(y, "575487128404786488833259129418", 10);
     // 5^7 - 23 * 3396 = 17, x = 7, p = 23, g = 5
     
     char *response = "Hello from server";
@@ -60,7 +60,11 @@ int main() {
     // Define the server address
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+
+    printf("Input a port No: ");
+    int port;
+    scanf("%d", &port);
+    address.sin_port = htons(port);
 
     // Bind the socket to the network address and port
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
@@ -73,7 +77,7 @@ int main() {
         perror("Listen");
         exit(EXIT_FAILURE);
     }
-    printf("Server listening on port %d\n", PORT);
+    printf("Server listening on port %d\n", port);
 
     // Accept an incoming connection
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {

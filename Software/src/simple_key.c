@@ -15,8 +15,8 @@ char buffer[1024] = {0};
 
 mpz_t x;
 
-void commit_to_verifier(mpz_t C){
-    mpz_get_str(buffer, 10, C);
+void commit_to_verifier(char *C){
+    strcpy(buffer, C);
     send(sock, buffer, strlen(buffer), 0);
     printf("Commit %s to host\n", buffer);
     memset(buffer, '\0', 1024);
@@ -42,8 +42,8 @@ void read_challenge(int *challenge){
     return;
 }
 
-void respond_to_challenge(mpz_t Response){
-    mpz_get_str(buffer, 10, Response);
+void respond_to_challenge(char *Response){
+    strcpy(buffer, Response);
     send(sock, buffer, strlen(buffer), 0);
     printf("Response challenge with %s to host\n", buffer);
     memset(buffer, '\0', 1024);
@@ -51,7 +51,7 @@ void respond_to_challenge(mpz_t Response){
 
 int main() {
     mpz_init(x);
-    mpz_set_ui(x, 7);
+    mpz_set_ui(x, 11223344);
 
     // Create a socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -60,7 +60,10 @@ int main() {
     }
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
+
+    int port;
+    scanf("%d", &port);
+    serv_addr.sin_port = htons(port);
 
     // Convert IPv4 address from text to binary form
     if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
@@ -76,6 +79,7 @@ int main() {
 
     ZKP_proof(x, commit_to_verifier, read_challenge, respond_to_challenge);
 
+    printf("ZKP_proof returned\n");
     // Close the socket
     close(sock);
     return 0;
