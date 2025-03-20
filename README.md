@@ -50,6 +50,7 @@ In case we will not be able to finish everything in time, we prioritize having f
 
 Run the following command in `Software/src/` directory.
 
+
 ```
 gcc -fPIC -c PAM_Module.c -o PAM_Module.o
 gcc -shared -o pam_zkp.so PAM_Module.o -lpam
