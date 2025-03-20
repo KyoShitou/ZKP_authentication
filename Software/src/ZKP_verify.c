@@ -22,9 +22,14 @@ static void Argument_init(){
     }
 }
 
-bool ZKP_verify(mpz_t y, void (*get_prover_commit)(char *), void (*challenge_prover)(bool), void (*get_prover_response)(char *), int rounds) {
+bool ZKP_verify(char *y_str, void (*get_prover_commit)(char *), void (*challenge_prover)(bool), void (*get_prover_response)(char *), int rounds) {
     Argument_init();
     bool flag = true;
+
+    mpz_t y;
+    mpz_init(y);
+
+    mpz_set_str(y, y_str, ZKP_BASE);
 
     for (int round = 0; round != rounds; round++){
         mpz_t challenge, commit, response;

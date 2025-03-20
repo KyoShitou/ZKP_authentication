@@ -8,6 +8,6 @@
 #define ZKP_BASE 10
 #endif
 
-bool ZKP_verify(mpz_t y, void (*get_prover_commit)(char *), void (*challenge_prover)(bool), void (*get_prover_response)(char *), int rounds);
+bool ZKP_verify(char *y, void (*get_prover_commit)(char *), void (*challenge_prover)(bool), void (*get_prover_response)(char *), int rounds);
 
 #endif
