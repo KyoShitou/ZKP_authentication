@@ -4,7 +4,7 @@
 
 The current paradigm of linux login procedure is very weak and insecure, a passive key logger could easily record your password.
 
-The idea is that we could utilize an interactive ZKP protocol with an external usb device to authenticate a user. The communication between the usb device and computer will not reveal any information on the password itself. 
+The idea is that we could utilize an interactive ZKP protocol with an external usb device to authenticate a user. The communication between the usb device and computer will not reveal any information on the password itself.
 
 A cool feature of this authentication method is that it is compatible with biometric authentication, given that there’s a biometric recognition device that outputs the same value for the same biometric.
 
@@ -29,16 +29,15 @@ The key selects a random number $r$, computes $C = g^r \mod p$, send $C$ to the 
 The host machine randomly request that the key either disclose $r$, or disclose the value
 $(x + r) \mod (p - 1)$, the key will act accordingly.
 
-The host system then could verify the value key returned, if host system requested $r$, trivially 
+The host system then could verify the value key returned, if host system requested $r$, trivially
 test $C \overset{?}{=} g^r \mod p$, else if the host system requested $(x + r) \mod (p - 1)$, they could verify by $(C \cdot y) \mod p \overset{?}{=} g^{(x + r) \mod (p - 1)}\mod p$
-
-
 
 ## Objectives
 
 We aim at implementing a hardware USB key and the corresponding system programming doing the work described above.
 
 ## Planning
+
 In case we will not be able to finish everything in time, we prioritize having functioning outcome as soon as possbile. Therefore, we would focus on making the software part (namely the system programming part).
 
 **1st week - Logistics:** Get a Raspberry Pi, building up the development environment (namely docker)
@@ -46,3 +45,13 @@ In case we will not be able to finish everything in time, we prioritize having f
 **2nd week to 5th week - Software:** Implement the software part, inlcuding ZKP protocol and integrated with Linux system
 
 **6th week to 9th week - Hardware:** Implement the firmware of the USB key
+
+## How to compile
+
+Run the following command in `Software/src/` directory.
+
+```
+gcc -fPIC -c PAM_Module.c -o PAM_Module.o
+gcc -shared -o pam_zkp.so PAM_Module.o -lpam
+
+```
