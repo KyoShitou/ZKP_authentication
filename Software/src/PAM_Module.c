@@ -19,6 +19,23 @@ static void get_prover_commit(char *commit);
 static void challenge_prover(bool challenge);
 static void get_prover_response(char *response);
 
+/*
+Called when no user using ZKP proof was found. Takes in a username and receives the public key,
+store them in "/etc/security/zkp_users"
+*/
+void create_user(const char *username)
+{
+    FILE *file = fopen("/etc/security/zkp_users", "a");
+    if (!file)
+        return;
+
+    char key[1024];
+    printf("Enter public key: ");
+    fgets(key, 1024, stdin); // further type checking needed
+    fprintf(file, "%s %s\n", username, key);
+    printf("User <%s> created!\n", username);
+}
+
 // PAM authentication function
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
@@ -36,6 +53,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     if (get_user_public_key(username, y_str, sizeof(y_str)) != 0)
     {
         pam_syslog(pamh, LOG_ERR, "Failed to retrieve public key for user %s.", username);
+        create_user(username);
         return PAM_AUTH_ERR;
     }
 
@@ -112,20 +130,4 @@ static void get_prover_response(char *response)
     fflush(stdout);
     fgets(response, 1024, stdin);
     response[strcspn(response, "\n")] = 0; // Remove newline
-}
-
-/*
-Called when no user using ZKP proof was found. Takes in a username and receives the public key,
-store them in "/etc/security/zkp_users"
-*/
-int create_user(const char *username)
-{
-    FILE *file = fopen("/etc/security/zkp_users", "a");
-    if (!file)
-        return -1;
-
-    char key[1024];
-    fgets(key, 1024, stdin); // further type checking needed
-    fprintf(file, "%s %s\n", username, key);
-    return 1;
 }
