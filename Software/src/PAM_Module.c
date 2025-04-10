@@ -114,14 +114,18 @@ static void get_prover_response(char *response)
     response[strcspn(response, "\n")] = 0; // Remove newline
 }
 
+/*
+Called when no user using ZKP proof was found. Takes in a username and receives the public key,
+store them in "/etc/security/zkp_users"
+*/
 int create_user(const char *username)
 {
     FILE *file = fopen("/etc/security/zkp_users", "a");
     if (!file)
         return -1;
 
-    char *key;
+    char key[1024];
+    fgets(key, 1024, stdin); // further type checking needed
     fprintf(file, "%s %s\n", username, key);
-
     return 1;
 }
