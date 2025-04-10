@@ -113,3 +113,15 @@ static void get_prover_response(char *response)
     fgets(response, 1024, stdin);
     response[strcspn(response, "\n")] = 0; // Remove newline
 }
+
+int create_user(const char *username)
+{
+    FILE *file = fopen("/etc/security/zkp_users", "a");
+    if (!file)
+        return -1;
+
+    char *key;
+    fprintf(file, "%s %s\n", username, key);
+
+    return 1;
+}
