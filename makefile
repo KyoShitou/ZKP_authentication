@@ -1,7 +1,11 @@
 install:
-	sudo cp ./Software/src/pam_zkp.so /lib/security/
-	sudo chown root:root /lib/security/pam_zkp.so
-	sudo chmod 644 /lib/security/pam_zkp.so
+	sudo cp ./Software/src/pam_zkp.so /usr/lib/x86_64-linux-gnu/security/
+	sudo chown root:root /usr/lib/x86_64-linux-gnu/security/pam_zkp.so
+	sudo chmod 644 /usr/lib/x86_64-linux-gnu/security/pam_zkp.so
+
+	# sudo cp ./Software/src/pam_zkp.so /usr/lib/security/
+	# sudo chown root:root /usr/lib/security/pam_zkp.so
+	# sudo chmod 644 /usr/lib/security/pam_zkp.so
 # Variables
 SRC_DIR := ./Software/src
 BUILD_DIR := $(SRC_DIR)

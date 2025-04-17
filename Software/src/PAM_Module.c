@@ -36,9 +36,19 @@ void create_user(const char *username)
     printf("User <%s> created!\n", username);
 }
 
+PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
+{
+    FILE *f = fopen("/tmp/asdf.txt", "w");
+    fprintf(f, "reached\n");
+    fclose(f);
+    return -1;
+}
 // PAM authentication function
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
+    FILE *f = fopen("/tmp/asdf.txt", "w");
+    fprintf(f, "reached\n");
+    fclose(f);
     const char *username;
     char y_str[1024];
 
