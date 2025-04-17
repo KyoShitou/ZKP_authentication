@@ -36,13 +36,6 @@ void create_user(const char *username)
     printf("User <%s> created!\n", username);
 }
 
-PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
-{
-    FILE *f = fopen("/tmp/asdf.txt", "w");
-    fprintf(f, "reached\n");
-    fclose(f);
-    return -1;
-}
 // PAM authentication function
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
@@ -63,7 +56,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     if (get_user_public_key(username, y_str, sizeof(y_str)) != 0)
     {
         pam_syslog(pamh, LOG_ERR, "Failed to retrieve public key for user %s.", username);
-        create_user(username);
         return PAM_AUTH_ERR;
     }
 
@@ -88,6 +80,48 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
 
 // PAM account management (not required but can be expanded)
 PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const char **argv)
+{
+    return PAM_SUCCESS;
+}
+
+PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh, int flags, int argc, const char **argv)
+{
+    return PAM_SUCCESS;
+}
+
+PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
+{
+    const char *username;
+    char dir_path[512];
+
+    /* Get the username from PAM */
+    pam_get_item(pamh, PAM_USER, (const void **)&username);
+
+    /* Creating directory path string */
+    sprintf(dir_path, "/home/%s", username);
+
+    mkdir(dir_path, 0770);
+
+    return PAM_SUCCESS;
+}
+
+PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
+{
+    const char *username;
+    char dir_path[512];
+
+    /* Get the username from PAM */
+    pam_get_item(pamh, PAM_USER, (const void **)&username);
+
+    /* Creating directory path string */
+    sprintf(dir_path, "/home/%s", username);
+
+    rmdir(dir_path);
+
+    return PAM_SUCCESS;
+}
+
+PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
     return PAM_SUCCESS;
 }
