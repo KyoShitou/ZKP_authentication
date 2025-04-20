@@ -46,13 +46,28 @@ In case we will not be able to finish everything in time, we prioritize having f
 
 **6th week to 9th week - Hardware:** Implement the firmware of the USB key
 
-## How to compile
+## How to use
+It is recommended that the module is developed and tested in docker container.
 
-Run the following command in `Software/src/` directory.
-
-
+To run the container:
 ```
-gcc -fPIC -c PAM_Module.c -o PAM_Module.o
-gcc -shared -o pam_zkp.so PAM_Module.o -lpam
+python3 run-docker.py
+```
+or, if you want to rebuild the container:
+```
+python3 run-docker.py --rebuild
+```
 
+To compile the module, run
+```
+make
+```
+
+To install the module (copying to the module directory and pam.d configurations), run
+```
+make install 
+```
+To run a demo of the authentication process, run
+```
+make test
 ```

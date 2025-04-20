@@ -85,7 +85,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     // Retrieve the stored public key y for the user
     if (get_user_public_key(username, y_str, sizeof(y_str)) != 0)
     {
-        pam_syslog(pamh, LOG_ERR, "Failed to retrieve public key for user %s.", username);
+        printf("Failed to retrieve key for user %s\n", username);
         return PAM_AUTH_ERR;
     }
 
