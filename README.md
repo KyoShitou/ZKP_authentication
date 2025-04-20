@@ -47,6 +47,17 @@ In case we will not be able to finish everything in time, we prioritize having f
 **6th week to 9th week - Hardware:** Implement the firmware of the USB key
 
 ## How to use
+It is recommended that the module is developed and tested in docker container.
+
+To run the container:
+```
+python3 run-docker.py
+```
+or, if you want to rebuild the container:
+```
+python3 run-docker.py --rebuild
+```
+
 To compile the module, run
 ```
 make
