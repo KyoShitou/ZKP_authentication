@@ -46,13 +46,17 @@ In case we will not be able to finish everything in time, we prioritize having f
 
 **6th week to 9th week - Hardware:** Implement the firmware of the USB key
 
-## How to compile
-
-Run the following command in `Software/src/` directory.
-
-
+## How to use
+To compile the module, run
 ```
-gcc -fPIC -c PAM_Module.c -o PAM_Module.o
-gcc -shared -o pam_zkp.so PAM_Module.o -lpam
+make
+```
 
+To install the module (copying to the module directory and pam.d configurations), run
+```
+make install 
+```
+To run a demo of the authentication process, run
+```
+make test
 ```
