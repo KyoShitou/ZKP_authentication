@@ -27,9 +27,11 @@ install: $(BUILD_DIR)/$(TARGET)
 	sudo cp $< /usr/lib/x86_64-linux-gnu/security/
 	sudo chown root:root /usr/lib/x86_64-linux-gnu/security/$(TARGET)
 	sudo chmod 644 /usr/lib/x86_64-linux-gnu/security/$(TARGET)
+	sudo cp Software/test/pamtest /etc/pam.d/
 	@echo "✅ Installed to /usr/lib/x86_64-linux-gnu/security/"
 test:
 	gcc Software/test/test_module.c -o Software/test/test_module -lpam -lpam_misc
+	sudo Software/test/test_module
 
 # Remove built files
 clean:
