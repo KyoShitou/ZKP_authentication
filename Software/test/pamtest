@@ -1,0 +1,5 @@
+#This file must be put in /etc/pam.h/
+
+auth        required       pam_zkp.so
+account     required       pam_zkp.so
+password    required       pam_zkp.so
