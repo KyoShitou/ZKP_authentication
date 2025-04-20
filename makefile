@@ -27,11 +27,7 @@ install: $(BUILD_DIR)/$(TARGET)
 	sudo cp $< /usr/lib/x86_64-linux-gnu/security/
 	sudo chown root:root /usr/lib/x86_64-linux-gnu/security/$(TARGET)
 	sudo chmod 644 /usr/lib/x86_64-linux-gnu/security/$(TARGET)
-
-	sudo cp $< /usr/lib/security/
-	sudo chown root:root /usr/lib/security/$(TARGET)
-	sudo chmod 644 /usr/lib/security/$(TARGET)
-	@echo "✅ Installed to /usr/lib/security/"
+	@echo "✅ Installed to /usr/lib/x86_64-linux-gnu/security/"
 test:
 	gcc Software/test/test_module.c -o Software/test/test_module -lpam -lpam_misc
 
