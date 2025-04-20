@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gmp.h>
+#include <unistd.h>
 
 #include <syslog.h>
 
@@ -87,6 +88,17 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     {
         printf("Failed to retrieve key for user %s\n", username);
         return PAM_AUTH_ERR;
+    }
+
+    printf("Retrieved public key: %s for user %s\n", y_str, username);
+
+    for (int i = 0; i != 10; i++) {
+        if (init_USB_key(ctx, dev_handle) == 0){
+            break;
+        }
+        printf("Unable to connect to USB key, trail %d/%d\n", i + 1, 10);
+        if (i == 9) return PAM_AUTH_ERR;
+        sleep(3);
     }
 
     // Perform ZKP verification

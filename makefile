@@ -14,7 +14,7 @@ all: $(BUILD_DIR)/$(TARGET)
 $(BUILD_DIR)/$(TARGET): $(OBJ_FILES)
 	@mkdir -p $(BUILD_DIR)
 	@echo "🔧 Compiling PAM module..."
-	$(CC) -shared -o $@ $(OBJ_FILES) -lpam -lgmp
+	$(CC) -shared -o $@ $(OBJ_FILES) -lpam -lgmp `pkg-config --cflags --libs libusb-1.0`
 	@echo "✅ Build complete: $@"
 
 # Rule to compile each .c to .o
